@@ -4,7 +4,7 @@ const path = require('path');
 const exec = require('child_process').exec;
 const fs = require('fs');
 
-const {app, autoUpdater, BrowserWindow, Menu, ipcMain} = electron;
+const {app, autoUpdater, BrowserWindow, dialog, Menu, ipcMain} = electron;
 
 let mainWindow;
 let downloadWindow;
