@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Frostspire</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+	<link rel="stylesheet" href="assets/css/custom.css">
+	<link href="https://fonts.googleapis.com/css?family=Exo+2:400,600" rel="stylesheet" type="text/css">
+</head>
+<body>
+	<nav>
+    <div class="nav-wrapper blue unselectable">
+    	<a class="brand-logo left">Frostspire</a>
+    	<ul id="nav-mobile" class="right">
+	    	<li><a id="vote">Vote</a></li>
+	    	<li><a id="store">Store</a></li>
+	    	<li><a id="highscores">Highscores</a></li>
+    	</ul>
+    </div>
+  	</nav>
+  	<div class="section">
+  		<div class="row">
+  			<div class="col s12 m6">
+  				<div class="card small blue darken-1">
+        			<div class="card-content white-text">
+          				<span class="card-title">Welcome to Frostspire!</span>
+          				<p>We're currently in beta and would love if you helped us test the game. For more information, please visit our Discord!</p>
+        			</div>
+        			<div class="card-action">
+          				<a href="" class="white-text" id="discord">Discord</a>
+       				 </div>
+      			</div>
+      		</div>
+  		</div>
+  	</div>
+	<div class="section valign-wrapper">
+		<div class="container">
+			<div class="row">
+				<div class="col s6">
+					<button class="waves-effect waves-light btn-large left blue disabled" id="playButton">Play</button>
+					
+				</div>
+				<div class="col s6">
+					<p class="center-align white-text" id="progressBarText">Downloading client..</p>
+					<div class="progress">
+      					<div class="indeterminate blue" id="progressBar"></div>
+  					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+		const electron = require('electron');
+		const {ipcRenderer} = electron;
+		const {shell} = require('electron');
+
+		const progressBarText = document.querySelector('#progressBarText');
+		const progressBar = document.querySelector('#progressBar');
+
+		const button = document.querySelector('#playButton');
+		button.addEventListener('click', launchGame);
+
+		const discord = document.querySelector('#discord');
+		discord.addEventListener('click', openDiscord);
+
+		const vote = document.querySelector('#vote');
+		vote.addEventListener('click', openVotePage);
+
+		const store = document.querySelector('#store');
+		store.addEventListener('click', openStorePage);
+
+		const highscores = document.querySelector('#highscores');
+		highscores.addEventListener('click', openHighscoresPage);
+
+		function launchGame(e) {
+			e.preventDefault();
+			ipcRenderer.send('launchGame');
+		}
+
+		function openDiscord(e) {
+			e.preventDefault();
+			shell.openExternal('https://discord.gg/0zU3KRSxrvjvFfeQ');
+		}
+
+		function openVotePage(e) {
+			e.preventDefault();
+			shell.openExternal('https://frostspire.net/vote');
+		}
+
+		function openStorePage(e) {
+			e.preventDefault();
+			shell.openExternal('https://frostspire.net');
+		}
+
+		function openHighscoresPage(e) {
+			e.preventDefault();
+			shell.openExternal('https://frostspire.net/highscores');
+		}
+
+		ipcRenderer.on('downloadFinishedSuccessfully', (e) => {
+			progressBarText.innerHTML = 'Download finished!';
+			button.classList.remove('disabled');
+		});
+
+		ipcRenderer.on('updateDownloadProgress', (e, percent) => {
+			progressBar.className = 'determinate blue';
+			progressBar.style.width = percent+'%';
+			console.log(percent+'%');
+		});
+	</script>
+</body>
+</html>

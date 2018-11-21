@@ -1,0 +1,24 @@
+html, body {
+	margin: 0;
+	height: 100%;
+	background-image: url("../images/background.png");
+	background-attachment: fixed;
+}
+
+.brand-logo {
+	font-family: 'Exo 2';
+}
+
+.btn-large {
+	width: 75%;
+	/*height: 150%;*/
+}
+
+.unselectable {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
