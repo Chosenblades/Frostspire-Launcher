@@ -4,12 +4,16 @@ const path = require('path');
 const exec = require('child_process').exec;
 const fs = require('fs');
 
-const {app, BrowserWindow, Menu, ipcMain} = electron;
+const {app, autoUpdater, BrowserWindow, Menu, ipcMain} = electron;
 
 let mainWindow;
 let downloadWindow;
 
+const server = 'https://hazel-qz9ewkagf.now.sh';
+const feed = `${server}/update/${process.platform}/${app.getVersion()}`;
 const jarPath = path.join(app.getPath('home'), 'Frostspire', 'client.jar');
+
+autoUpdater.setFeedURL(feed);
 
 // Listen for app to be ready
 app.on('ready', function(){
@@ -27,6 +31,10 @@ app.on('ready', function(){
 	mainWindow.on('closed', function(){
 		app.quit();
 	});
+
+	setInterval(() => {
+ 		autoUpdater.checkForUpdates()
+	}, 60000);
 
 	//Remove menu - TODO: make menu for mac
 	//Menu.setApplicationMenu(null);
@@ -78,3 +86,16 @@ ipcMain.on('launchGame', function(e){
 
 })
 
+autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName) => {
+  const dialogOpts = {
+    type: 'info',
+    buttons: ['Restart', 'Later'],
+    title: 'Application Update',
+    message: process.platform === 'win32' ? releaseNotes : releaseName,
+    detail: 'A new version has been downloaded. Restart the application to apply the updates.'
+  }
+
+  dialog.showMessageBox(dialogOpts, (response) => {
+    if (response === 0) autoUpdater.quitAndInstall()
+  })
+})
