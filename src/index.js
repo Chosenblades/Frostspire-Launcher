@@ -9,14 +9,25 @@ const {app, autoUpdater, BrowserWindow, dialog, Menu, ipcMain} = electron;
 let mainWindow;
 let downloadWindow;
 const jarPath = path.join(app.getPath('home'), 'Frostspire', 'client.jar');
-const server = 'https://frostspire-launcher.herokuapp.com'
-const feed = `${server}/update/win32/:${app.getVersion()}`
+/*const server = 'https://frostspire-launcher.herokuapp.com'
+const feed = `${server}/update/win32/${app.getVersion()}`
+console.log(feed);*/
+
+const feed = url.format({
+	protocol: 'https',
+	hostname: 'frostspire-launcher.herokuapp.com',
+	pathname: '/update/win32/'+app.getVersion(),
+	query: {
+
+	}
+});
+console.log(feed);
 
 // Listen for app to be ready
 app.on('ready', function(){
 	if (require('electron-squirrel-startup')) return;
 
-	autoUpdater.setFeedURL(feed)
+	autoUpdater.setFeedURL(feed);
 	autoUpdater.checkForUpdates();
 
 	//Create main window
