@@ -1,7 +1,7 @@
 {
   "name": "Frostspire",
   "productName": "Frostspire",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Frostspire launcher",
   "main": "src/index.js",
   "scripts": {

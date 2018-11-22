@@ -8,16 +8,17 @@ const {app, autoUpdater, BrowserWindow, dialog, Menu, ipcMain} = electron;
 
 let mainWindow;
 let downloadWindow;
-
-const server = 'https://hazel-qz9ewkagf.now.sh';
-const feed = `${server}/update/:${process.platform}/:${app.getVersion()}`;
 const jarPath = path.join(app.getPath('home'), 'Frostspire', 'client.jar');
-
-autoUpdater.setFeedURL(feed);
+const server = 'https://frostspire-launcher.herokuapp.com'
+const feed = `${server}/update/win32/:${app.getVersion()}`
 
 // Listen for app to be ready
 app.on('ready', function(){
 	if (require('electron-squirrel-startup')) return;
+
+	autoUpdater.setFeedURL(feed)
+	autoUpdater.checkForUpdates();
+
 	//Create main window
 	mainWindow = new BrowserWindow({ resizable: false});
 	// Load html into window
@@ -31,10 +32,6 @@ app.on('ready', function(){
 	mainWindow.on('closed', function(){
 		app.quit();
 	});
-
-	setInterval(() => {
- 		autoUpdater.checkForUpdates()
-	}, 60000);
 
 	//Remove menu - TODO: make menu for mac
 	//Menu.setApplicationMenu(null);
@@ -98,4 +95,9 @@ autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName) => {
   dialog.showMessageBox(dialogOpts, (response) => {
     if (response === 0) autoUpdater.quitAndInstall()
   })
+})
+
+autoUpdater.on('error', message => {
+  console.error('There was a problem updating the application')
+  console.error(message)
 })
