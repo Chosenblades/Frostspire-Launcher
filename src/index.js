@@ -10,7 +10,7 @@ let mainWindow;
 let downloadWindow;
 
 const server = 'https://hazel-qz9ewkagf.now.sh';
-const feed = `${server}/update/${process.platform}/${app.getVersion()}`;
+const feed = `${server}/update/:${process.platform}/:${app.getVersion()}`;
 const jarPath = path.join(app.getPath('home'), 'Frostspire', 'client.jar');
 
 autoUpdater.setFeedURL(feed);
