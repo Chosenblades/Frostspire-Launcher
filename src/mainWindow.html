@@ -19,7 +19,7 @@
   	</nav>
   	<div class="section">
   		<div class="row">
-  			<div class="col s12 m6">
+  			<div class="col s6 m6">
   				<div class="card small blue darken-1">
         			<div class="card-content white-text">
           				<span class="card-title">Welcome to Frostspire!</span>
@@ -28,6 +28,15 @@
         			<div class="card-action">
           				<a href="" class="white-text" id="discord">Discord</a>
        				 </div>
+      			</div>
+      		</div>
+      		<div class="col s6 m6">
+      			<div class="card-panel blue darken-1 right">
+      				<span class="white-text">Server is </span>
+      				<span class="green-text text-accent-3" id="serverstatus">Online</span>
+      				<br/>
+      				<hr>
+      				<span class="white-text">There are currently <span class="white-text" id="playercount">69</span> players online</span>
       			</div>
       		</div>
   		</div>
@@ -55,6 +64,8 @@
 
 		const progressBarText = document.querySelector('#progressBarText');
 		const progressBar = document.querySelector('#progressBar');
+
+		const serverStatus = document.querySelector('#serverstatus');
 
 		const button = document.querySelector('#playButton');
 		button.addEventListener('click', launchGame);
@@ -96,6 +107,18 @@
 			shell.openExternal('https://frostspire.net/highscores');
 		}
 
+		function updatePlayerCount() {
+			var xhttp; 
+			xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+				document.getElementById("playercount").innerHTML = this.responseText;
+				}
+			};
+			xhttp.open("GET", "https://frostspire.net/server/playersonline.php", true);
+			xhttp.send();
+		}
+
 		ipcRenderer.on('downloadFinishedSuccessfully', (e) => {
 			progressBarText.innerHTML = 'Download finished!';
 			button.classList.remove('disabled');
@@ -106,6 +129,18 @@
 			progressBar.style.width = percent+'%';
 			console.log(percent+'%');
 		});
+
+		ipcRenderer.on('serverStatus', (e, online) => {
+			if(online) {
+				serverStatus.innerHTML = "Online";
+				//set color to green
+			} else {
+				serverStatus.innerHTML = "Offline";
+				//set color to red
+			}
+		})
+
+		updatePlayerCount();
 	</script>
 </body>
 </html>

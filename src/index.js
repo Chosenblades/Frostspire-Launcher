@@ -3,15 +3,16 @@ const url = require('url');
 const path = require('path');
 const exec = require('child_process').exec;
 const fs = require('fs');
+const net = require('net');
 
 const {app, autoUpdater, BrowserWindow, dialog, Menu, ipcMain} = electron;
 
 let mainWindow;
 let downloadWindow;
+let statusWindow;
 const jarPath = path.join(app.getPath('home'), 'Frostspire', 'client.jar');
-/*const server = 'https://frostspire-launcher.herokuapp.com'
-const feed = `${server}/update/win32/${app.getVersion()}`
-console.log(feed);*/
+const serverPort = 43595;
+const serverHost = '158.69.212.189';
 
 const feed = url.format({
 	protocol: 'https',
@@ -45,7 +46,15 @@ app.on('ready', function(){
 	});
 
 	//Remove menu - TODO: make menu for mac
-	//Menu.setApplicationMenu(null);
+	Menu.setApplicationMenu(null);
+
+	//Start checking server's status
+	setInterval(() => {
+		checkServerStatus();
+	}, 60000);
+
+	//Perform an initial check
+	checkServerStatus();
 
 	//Download game client
 	downloadWindow = new BrowserWindow({show: false});
@@ -112,3 +121,26 @@ autoUpdater.on('error', message => {
   console.error('There was a problem updating the application')
   console.error(message)
 })
+
+function checkServerStatus() {
+	const connection = new net.Socket();
+	connection.setTimeout(5000);
+	connection.connect(serverPort, serverHost);
+
+	connection.on('connect', () => {
+		console.log('server is online');
+		mainWindow.webContents.send('serverStatus', true);
+		connection.end();
+	});
+
+	connection.on('error', (e) => {
+		console.log(e.name + ' : '+ e.message);
+		mainWindow.webContents.send('serverStatus', false);
+		connection.end();
+	});
+
+	connection.on('timeout', () => {
+		mainWindow.webContents.send('serverStatus', false);
+		connection.end();
+	});
+}
