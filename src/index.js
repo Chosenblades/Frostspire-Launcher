@@ -19,7 +19,6 @@ const feed = url.format({
 	hostname: 'frostspire-launcher.herokuapp.com',
 	pathname: '/update/win32/'+app.getVersion(),
 	query: {
-
 	}
 });
 console.log(feed);
@@ -29,7 +28,7 @@ app.on('ready', function(){
 	if (require('electron-squirrel-startup')) return;
 
 	autoUpdater.setFeedURL(feed);
-	autoUpdater.checkForUpdates();
+	//autoUpdater.checkForUpdates();
 
 	//Create main window
 	mainWindow = new BrowserWindow({ resizable: false});
@@ -46,7 +45,7 @@ app.on('ready', function(){
 	});
 
 	//Remove menu - TODO: make menu for mac
-	Menu.setApplicationMenu(null);
+	//Menu.setApplicationMenu(null);
 
 	//Start checking server's status
 	setInterval(() => {

@@ -33,7 +33,7 @@
       		<div class="col s6 m6">
       			<div class="card-panel blue darken-1 right">
       				<span class="white-text">Server is </span>
-      				<span class="green-text text-accent-3" id="serverstatus">Online</span>
+      				<b><span class="green-text text-accent-3" id="serverstatus">Online</span></b>
       				<br/>
       				<hr>
       				<span class="white-text">There are currently <span class="white-text" id="playercount">69</span> players online</span>
@@ -133,10 +133,10 @@
 		ipcRenderer.on('serverStatus', (e, online) => {
 			if(online) {
 				serverStatus.innerHTML = "Online";
-				//set color to green
+				serverStatus.className = 'green-text text-accent-3';
 			} else {
 				serverStatus.innerHTML = "Offline";
-				//set color to red
+				serverStatus.className = 'red-text text-accent-3';
 			}
 		})
 
